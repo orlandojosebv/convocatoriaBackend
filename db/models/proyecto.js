@@ -1,62 +1,59 @@
 module.exports = (sequelize, DataTypes, Model) => {
-  class Usuario extends Model {
+  class Proyecto extends Model {
     static associate(models) {
-      this.hasMany(models.Notificacion, {
-        foreignKey: "id_usuario",
+      this.belongsToMany(models.Usuario, {
+        through: "Proyecto_integrante",
+        foreignKey: "id_proyecto",
         onDelete: "CASCADE",
       });
-      this.belongsTo(models.Rol, {
-        foreignKey: "id_rol",
-        onDelete: "RESTRICT",
-      });
-      this.hasMany(models.Proyecto, {
+
+      this.belongsTo(models.Usuario, {
         foreignKey: "id_usuario",
+        as: "docente_asignado", // Alias para evitar confusión con el nombre de la clave
         onDelete: "RESTRICT",
-      });
-      this.belongsToMany(models.Proyecto, {
-        through: "proyecto_integrante",
-        foreignKey: "id_usuario",
-        onDelete: "CASCADE",
       });
       this.hasMany(models.Calificacion, {
-        foreignKey: "id_usuario",
+        foreignKey: "id_proyecto",
+        onDelete: "CASCADE",
+      });
+      this.belongsTo(models.CategoriaConvocatoria, {
+        foreignKey: "id_categoria",
         onDelete: "RESTRICT",
       });
     }
   }
 
-  Usuario.init(
+  Proyecto.init(
     {
-      id_usuario: {
+      id_proyecto: {
         type: DataTypes.STRING,
         primaryKey: true,
       },
-      correo: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-      },
-      nombre: {
+      titulo: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      apellido: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      contrasena: {
+      descripcion: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       estado: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      fecha_inscripcion: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      calificacion_final: {
+        type: DataTypes.DECIMAL,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "Usuario",
-      tableName: "usuario",
+      modelName: "Proyecto",
+      tableName: "proyecto",
       freezeTableName: true,
       createdAt: false,
       updatedAt: false,

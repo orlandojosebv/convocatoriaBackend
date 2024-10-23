@@ -1,32 +1,33 @@
 module.exports = (sequelize, DataTypes, Model) => {
-    class Rol extends Model {
+    class Rubrica extends Model {
       static associate(models) {
-        this.belongsToMany(models.Permiso, {
-          through: "Rol_Permiso",
+        //Relacion con idconvocatoria y con id_categoria
+        this.hasMany(models.Criterio, {
+          foreignKey: "id_rubrica",
           onDelete: "CASCADE",
         });
-        this.hasMany(models.Usuario, {
-          foreignKey: "id_rol",
+        this.belongsTo(models.CategoriaConvocatoria, {
+          foreignKey: "id_categoria",
           onDelete: "RESTRICT",
         });
       }
     }
   
-    Rol.init(
+    Rubrica.init(
       {
-        id_rol: {
+        id_rubrica: {
           type: DataTypes.STRING,
           primaryKey: true,
         },
-        nombre_rol: {
+        nombre_rubrica: {
           type: DataTypes.STRING,
-          unique: true,
+          allowNull: false,
         },
       },
       {
         sequelize,
-        modelName: "Rol",
-        tableName: "rol",
+        modelName: "Rubrica",
+        tableName: "rubrica",
         freezeTableName: true,
         createdAt: false,
         updatedAt: false,

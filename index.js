@@ -14,6 +14,7 @@ const rubricaRouter = require("./routes/RubricaRouter");
 const calificacionRouter = require("./routes/CalificacionRouter");
 const criterioRouter = require("./routes/CriterioRouter");
 const notificacionRouter = require("./routes/NotificacionRouter");
+const permisoRouter=require("./routes/PermisoRouter.js")
 
 
 app.use(
@@ -36,6 +37,8 @@ app.use("/api/rubricas", rubricaRouter);
 app.use("/api/calificaciones", calificacionRouter);
 app.use("/api/criterios", criterioRouter);
 app.use("/api/notificaciones", notificacionRouter);
+app.use("/api/permisos", permisoRouter);
+
 
 app.all('*', (req, res) => {
     res.status(404).send({ message: "ruta invalida" });

@@ -1,19 +1,26 @@
 const UsuarioService = require("../services/UsuarioService");
-
 const usuarioService = new UsuarioService();
 
 class UsuarioController {
-  // Obtener todos los usuarios
+  // Obtener todos los usuarios con el nombre de su rol
   async getAll(req, res) {
     try {
       const usuarios = await usuarioService.findAll();
-      res.status(200).json(usuarios);
+      // Mapea los usuarios para incluir solo el nombre del rol
+      const usuariosConRol = usuarios.map((usuario) => {
+        const { Rol, ...usuarioSinRol } = usuario.toJSON(); // Excluye el objeto completo de Rol
+        return {
+          ...usuarioSinRol,
+          nombre_rol: Rol ? Rol.nombre_rol : null, // Incluye solo el nombre del rol
+        };
+      });
+      res.status(200).json(usuariosConRol);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  // Obtener un usuario por ID
+  // Obtener un usuario por ID con el nombre de su rol
   async getOne(req, res) {
     try {
       const { id } = req.params;
@@ -21,7 +28,11 @@ class UsuarioController {
       if (!usuario) {
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
-      res.status(200).json(usuario);
+      const { Rol, ...usuarioSinRol } = usuario.toJSON(); // Excluye el objeto completo de Rol
+      res.status(200).json({
+        ...usuarioSinRol,
+        nombre_rol: Rol ? Rol.nombre_rol : null, // Incluye solo el nombre del rol
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

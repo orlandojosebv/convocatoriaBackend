@@ -2,26 +2,32 @@ const db = require("../db/index");
 const models = db.sequelize.models;
 
 class RolService {
-  // Obtener todos los roles con sus relaciones
+  // Obtener todos los roles con solo los permisos
   async findAll() {
     return await models.Rol.findAll({
+      attributes: ["id_rol", "nombre_rol"],
       include: [
-        { model: models.Usuario }, // Usuarios asociados al rol
-        { model: models.Permiso, through: "rol_permiso" } // Permisos asociados al rol
+        { 
+          model: models.Permiso,
+          as: "Permisos",
+          through: { attributes: [] } // Excluir atributos de la tabla intermedia
+        }
       ],
     });
   }
 
-  // Obtener un rol por ID con sus relaciones
+  // Obtener un rol por ID con solo permisos
   async findOne(id) {
-    const rol = await models.Rol.findByPk(id, {
+    return await models.Rol.findByPk(id, {
+      attributes: ["id_rol", "nombre_rol"],
       include: [
-        { model: models.Usuario },
-        { model: models.Permiso, through: "rol_permiso" }
+        { 
+          model: models.Permiso,
+          as: "Permisos",
+          through: { attributes: [] } // Excluir atributos de la tabla intermedia
+        }
       ],
     });
-    if (!rol) throw new Error("Rol no encontrado");
-    return rol;
   }
 
   // Crear un nuevo rol
@@ -40,6 +46,21 @@ class RolService {
     const rol = await this.findOne(id);
     await rol.destroy();
     return { deleted: true };
+  }
+
+  // Asignar permisos a un rol específico
+  async assignPermissions(id, permissionIds) { 
+    const rol = await models.Rol.findByPk(id);
+    if (!rol) throw new Error("Rol no encontrado");
+
+    const permisos = await models.Permiso.findAll({
+      where: { id_permiso: permissionIds }
+    });
+
+    if (permisos.length === 0) throw new Error("Permisos no encontrados");
+
+    await rol.addPermisos(permisos);
+    return rol;
   }
 }
 

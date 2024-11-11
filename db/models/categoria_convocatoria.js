@@ -1,17 +1,21 @@
+// CategoriaConvocatoria.js
 module.exports = (sequelize, DataTypes, Model) => {
   class CategoriaConvocatoria extends Model {
     static associate(models) {
       this.belongsTo(models.Convocatoria, {
         foreignKey: "id_convocatoria",
+        as: "Convocatoria",  // Especifica un alias aquí
         onDelete: "RESTRICT",
       });
       this.hasMany(models.Rubrica, {
         foreignKey: "id_categoria",
+        as: "Rubricas",
         onDelete: "RESTRICT",
       });
       this.hasMany(models.Proyecto, {
         foreignKey: "id_categoria",
-        onDelete: "RESCTRICT",
+        as: "Proyectos",
+        onDelete: "RESTRICT",
       });
     }
   }
@@ -36,4 +40,6 @@ module.exports = (sequelize, DataTypes, Model) => {
       updatedAt: false,
     }
   );
+
+  return CategoriaConvocatoria;
 };

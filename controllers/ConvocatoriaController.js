@@ -32,7 +32,7 @@ class ConvocatoriaController {
     try {
       const data = req.body;
       const newConvocatoria = await convocatoriaService.create(data);
-      res.status(201).json(newConvocatoria);
+      res.status(201).json({ message: "Convocatoria creada con éxito", newConvocatoria });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

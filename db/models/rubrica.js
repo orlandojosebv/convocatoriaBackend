@@ -4,10 +4,12 @@ module.exports = (sequelize, DataTypes, Model) => {
         //Relacion con idconvocatoria y con id_categoria
         this.hasMany(models.Criterio, {
           foreignKey: "id_rubrica",
+          as:"Criterios",
           onDelete: "CASCADE",
         });
         this.belongsTo(models.CategoriaConvocatoria, {
           foreignKey: "id_categoria",
+          as: "CategoriaConvocatoria",
           onDelete: "RESTRICT",
         });
       }

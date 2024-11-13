@@ -5,24 +5,41 @@ class RubricaService {
   // Obtener todas las rúbricas con sus relaciones
   async findAll() {
     return await models.Rubrica.findAll({
+      attributes: ["id_rubrica", "nombre_rubrica", "id_categoria"],
       include: [
-        { model: models.Criterio },           // Criterios de la rúbrica
-        { model: models.CategoriaConvocatoria } // Categoría de la convocatoria a la que pertenece la rúbrica
+        { 
+          model: models.Criterio,
+          as: "Criterios",
+          attributes: ["id_criterio", "descripcion"] // Ajusta los atributos necesarios de Criterio
+        },
+        { 
+          model: models.CategoriaConvocatoria,
+          as: "CategoriaConvocatoria", // Alias correcto
+          attributes: ["nombre_categoria"] // Solo nombre_categoria
+        }
       ],
     });
   }
 
   // Obtener una rúbrica por ID con sus relaciones
   async findOne(id) {
-    const rubrica = await models.Rubrica.findByPk(id, {
+    return await models.Rubrica.findByPk(id, {
+      attributes: ["id_rubrica", "nombre_rubrica", "id_categoria"],
       include: [
-        { model: models.Criterio },
-        { model: models.CategoriaConvocatoria }
+        { 
+          model: models.Criterio,
+          as: "Criterios",
+          attributes: ["id_criterio", "descripcion"]
+        },
+        { 
+          model: models.CategoriaConvocatoria,
+          as: "CategoriaConvocatoria",
+          attributes: ["nombre_categoria"]
+        }
       ],
     });
-    if (!rubrica) throw new Error("Rúbrica no encontrada");
-    return rubrica;
   }
+
 
   // Crear una nueva rúbrica
   async create(data) {

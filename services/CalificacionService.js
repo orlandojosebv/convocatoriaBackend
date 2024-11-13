@@ -8,22 +8,34 @@ class CalificacionService {
       include: [
         { model: models.Usuario },  // Usuario que realizó la calificación
         { model: models.Proyecto }, // Proyecto al que pertenece la calificación
-        { model: models.Criterio, through: "calificacion_criterio" } // Criterios de la calificación
+        {
+          model: models.Criterio,
+          as: "Criterios",
+          through: {
+            model: models.Calificacion_Criterio,
+            attributes: ["puntaje_asignado"],
+          },
+        },
       ],
     });
   }
 
   // Obtener una calificación por ID con sus relaciones
   async findOne(id) {
-    const calificacion = await models.Calificacion.findByPk(id, {
+    return await models.Calificacion.findByPk(id, {
       include: [
         { model: models.Usuario },
         { model: models.Proyecto },
-        { model: models.Criterio, through: "calificacion_criterio" }
+        {
+          model: models.Criterio,
+          as: "Criterios",
+          through: {
+            model: models.Calificacion_Criterio,
+            attributes: ["puntaje_asignado"],
+          },
+        },
       ],
     });
-    if (!calificacion) throw new Error("Calificación no encontrada");
-    return calificacion;
   }
 
   // Crear una nueva calificación

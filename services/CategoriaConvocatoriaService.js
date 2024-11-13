@@ -7,9 +7,11 @@ class CategoriaConvocatoriaService {
   async findAll() {
     return await models.CategoriaConvocatoria.findAll({
       include: [
-        { model: models.Convocatoria, as: "Convocatoria" },
-        { model: models.Rubrica, as: "Rubricas" },
-        { model: models.Proyecto, as: "Proyectos" }
+        {
+          model: models.Rubrica,
+          as: "Rubrica",
+          attributes: ["id_rubrica", "nombre_rubrica"] // Selecciona solo los atributos de Rubricas que necesites
+        }
       ],
     });
   }
@@ -18,9 +20,11 @@ class CategoriaConvocatoriaService {
   async findOne(id) {
     const categoria = await models.CategoriaConvocatoria.findByPk(id, {
       include: [
-        { model: models.Convocatoria },
-        { model: models.Rubrica },
-        { model: models.Proyecto }
+        {
+          model: models.Rubrica,
+          as: "Rubrica",
+          attributes: ["id_rubrica", "nombre_rubrica"] // Selecciona solo los atributos de Rubricas que necesites
+        }
       ],
     });
     if (!categoria) throw new Error("CategoriaConvocatoria no encontrada");

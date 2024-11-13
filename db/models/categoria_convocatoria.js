@@ -4,12 +4,12 @@ module.exports = (sequelize, DataTypes, Model) => {
     static associate(models) {
       this.belongsTo(models.Convocatoria, {
         foreignKey: "id_convocatoria",
-        as: "Convocatoria",  // Especifica un alias aquí
+        as: "Convocatoria",  
         onDelete: "RESTRICT",
       });
       this.hasMany(models.Rubrica, {
         foreignKey: "id_categoria",
-        as: "Rubricas",
+        as: "Rubrica",
         onDelete: "RESTRICT",
       });
       this.hasMany(models.Proyecto, {

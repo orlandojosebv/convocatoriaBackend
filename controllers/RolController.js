@@ -39,24 +39,32 @@ class RolController {
         await rolService.assignPermissions(newRol.id_rol, permissionIds);
       }
 
-      res.status(201).json({ message: "Rol creado y permisos asignados", newRol });
+      res
+        .status(201)
+        .json({ message: "Rol creado y permisos asignados", newRol });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   }
-  
 
   // Actualizar un rol existente
-  async update(req, res) {
-    try {
+async update(req, res) {
+  try {
       const { id } = req.params;
       const data = req.body;
+
+      // Llamada a servicio de actualización, incluyendo permisos
       const updatedRol = await rolService.update(id, data);
-      res.status(200).json(updatedRol);
-    } catch (error) {
+
+      // Obtener el rol actualizado con permisos incluidos para la respuesta
+      const rolConPermisos = await rolService.findOne(id);
+
+      res.status(200).json(rolConPermisos);
+  } catch (error) {
       res.status(500).json({ error: error.message });
-    }
   }
+}
+
 
   // Eliminar un rol
   async delete(req, res) {
@@ -76,7 +84,10 @@ class RolController {
       const { permissionIds } = req.body;
 
       const rol = await rolService.assignPermissions(id, permissionIds);
-      res.status(200).json({ message: "Permisos asignados correctamente", rol });
+
+      res
+        .status(200)
+        .json({ message: "Permisos asignados correctamente", rol });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

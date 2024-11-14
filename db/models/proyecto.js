@@ -2,14 +2,16 @@ module.exports = (sequelize, DataTypes, Model) => {
   class Proyecto extends Model {
     static associate(models) {
       this.belongsToMany(models.Usuario, {
-        through: "Proyecto_integrante",
-        foreignKey: "id_proyecto",
+        through: models.Proyecto_integrante,
+        foreignKey: "id_proyecto",  // Especifica el nombre exacto de la columna
+        otherKey: "id_usuario",     // Especifica la columna en Usuario
+        as: "integrantes",
         onDelete: "CASCADE",
       });
 
       this.belongsTo(models.Usuario, {
         foreignKey: "id_usuario",
-        as: "docente_asignado", // Alias para evitar confusión con el nombre de la clave
+        as: "docente_asignado",
         onDelete: "RESTRICT",
       });
       this.hasMany(models.Calificacion, {

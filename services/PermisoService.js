@@ -5,8 +5,14 @@ class PermisoService {
   // Obtener todos los permisos con los roles asociados
   async findAll() {
     return await models.Permiso.findAll({
+      attributes: ["id_permiso", "nombre_permiso"], // Selecciona solo los atributos necesarios para Permiso
       include: [
-        { model: models.Rol, as: "Rols", through: "Rol_Permiso" } // Incluye los roles asociados al permiso
+        {
+          model: models.Rol,
+          as: "Rols", // Utiliza el alias correctamente definido
+          attributes: ["id_rol", "nombre_rol"], // Selecciona solo los atributos necesarios para Rol
+          through: { attributes: [] } // Excluye completamente la tabla intermedia
+        }
       ],
     });
   }
@@ -14,8 +20,14 @@ class PermisoService {
   // Obtener un permiso por ID con los roles asociados
   async findOne(id) {
     return await models.Permiso.findByPk(id, {
+      attributes: ["id_permiso", "nombre_permiso"],
       include: [
-        { model: models.Rol, as: "Rols", through: "Rol_Permiso" } // Incluye los roles asociados
+        {
+          model: models.Rol,
+          as: "Rols",
+          attributes: ["id_rol", "nombre_rol"],
+          through: { attributes: [] }
+        }
       ],
     });
   }

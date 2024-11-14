@@ -2,14 +2,28 @@ const db = require("../db/index");
 const models = db.sequelize.models;
 
 class ConvocatoriaService {
-  // Obtener todas las convocatorias
+  // Obtener todas las convocatorias con categorías asociadas
   async findAll() {
-    return await models.Convocatoria.findAll();
+    return await models.Convocatoria.findAll({
+      include: [
+        {
+          model: models.CategoriaConvocatoria,
+          attributes: ["id_categoria", "nombre_categoria"], // Selecciona el id y el nombre de la categoría
+        }
+      ]
+    });
   }
 
-  // Obtener una convocatoria por ID
+  // Obtener una convocatoria por ID con categorías asociadas
   async findOne(id) {
-    const convocatoria = await models.Convocatoria.findByPk(id);
+    const convocatoria = await models.Convocatoria.findByPk(id, {
+      include: [
+        {
+          model: models.CategoriaConvocatoria,
+          attributes: ["id_categoria", "nombre_categoria"],
+        }
+      ]
+    });
     if (!convocatoria) throw new Error("Convocatoria no encontrada");
     return convocatoria;
   }
@@ -23,12 +37,11 @@ class ConvocatoriaService {
       fecha_limite_calificacion,
       fecha_inicio_convocatoria,
       fecha_cierre_convocatoria,
-      categorias, // Recibe un array con los IDs de categorías existentes
+      categorias,
     } = data;
 
-    // Crear una nueva convocatoria y asociar categorías existentes
     const newConvocatoria = await models.Convocatoria.create({
-      id_convocatoria: data.id_convocatoria, // Puede ser manual o generado
+      id_convocatoria: data.id_convocatoria,
       nombre_convocatoria,
       fecha_inicio_inscripcion,
       fecha_cierre_inscripcion,
@@ -37,10 +50,9 @@ class ConvocatoriaService {
       fecha_cierre_convocatoria,
     });
 
-    // Asociar categorías existentes a la convocatoria
     if (categorias && categorias.length > 0) {
       const existingCategorias = await models.CategoriaConvocatoria.findAll({
-        where: { id_categoria: categorias }, // Busca las categorías por ID
+        where: { id_categoria: categorias },
       });
       for (const categoria of existingCategorias) {
         await categoria.update({

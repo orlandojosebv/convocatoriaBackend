@@ -2,22 +2,28 @@ const db = require("../db/index");
 const models = db.sequelize.models;
 
 class UsuarioService {
-  // Obtener todos los usuarios con sus roles y notificaciones
+  // Obtener todos los usuarios con los campos solicitados y el rol
   async findAll() {
     return await models.Usuario.findAll({
+      attributes: ["id_usuario", "correo", "estado"], // Solo los campos necesarios
       include: [
-        { model: models.Notificacion },  // Incluye notificaciones del usuario
-        { model: models.Rol },           // Incluye el rol del usuario
+        {
+          model: models.Rol,
+          attributes: ["id_rol", "nombre_rol"] // Incluye solo el id y nombre del rol
+        }
       ],
     });
   }
 
-  // Obtener un usuario por ID con sus roles y notificaciones
+  // Obtener un usuario por ID con los campos solicitados y el rol
   async findOne(id) {
     return await models.Usuario.findByPk(id, {
+      attributes: ["id_usuario", "correo", "estado"], // Solo los campos necesarios
       include: [
-        { model: models.Notificacion },
-        { model: models.Rol },
+        {
+          model: models.Rol,
+          attributes: ["id_rol", "nombre_rol"] // Incluye solo el id y nombre del rol
+        }
       ],
     });
   }
@@ -25,7 +31,8 @@ class UsuarioService {
   // Crear un nuevo usuario
   async create(data) {
     return await models.Usuario.create(data);
-  }
+ }
+   
 
   // Actualizar un usuario existente
   async update(id, data) {

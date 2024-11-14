@@ -6,12 +6,12 @@ class UsuarioController {
   async getAll(req, res) {
     try {
       const usuarios = await usuarioService.findAll();
-      // Mapea los usuarios para incluir solo el nombre del rol
       const usuariosConRol = usuarios.map((usuario) => {
-        const { Rol, ...usuarioSinRol } = usuario.toJSON(); // Excluye el objeto completo de Rol
+        const { Rol, ...usuarioSinRol } = usuario.toJSON();
         return {
           ...usuarioSinRol,
-          nombre_rol: Rol ? Rol.nombre_rol : null, // Incluye solo el nombre del rol
+          id_rol: Rol ? Rol.id_rol : null,
+          nombre_rol: Rol ? Rol.nombre_rol : null
         };
       });
       res.status(200).json(usuariosConRol);
@@ -28,24 +28,33 @@ class UsuarioController {
       if (!usuario) {
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
-      const { Rol, ...usuarioSinRol } = usuario.toJSON(); // Excluye el objeto completo de Rol
+      const { Rol, ...usuarioSinRol } = usuario.toJSON();
       res.status(200).json({
         ...usuarioSinRol,
-        nombre_rol: Rol ? Rol.nombre_rol : null, // Incluye solo el nombre del rol
+        id_rol: Rol ? Rol.id_rol : null,
+        nombre_rol: Rol ? Rol.nombre_rol : null
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  // Crear un nuevo usuario
+  // Crear un nuevo usuario con mensaje de éxito
   async create(req, res) {
     try {
       const data = req.body;
       const newUsuario = await usuarioService.create(data);
-      res.status(201).json(newUsuario);
+      res.status(201).json({
+        success: true,
+        message: "Usuario creado exitosamente",
+        usuario: newUsuario
+      });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(400).json({
+        success: false,
+        message: "Error al crear el usuario",
+        error: error.message
+      });
     }
   }
 

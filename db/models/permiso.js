@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes, Model) => {
     static associate(models) {
       this.belongsToMany(models.Rol, {
         through: "Rol_Permiso",
+        as: "Rols", // Alias para la relación inversa con Rol
         onDelete: "CASCADE",
       });
     }

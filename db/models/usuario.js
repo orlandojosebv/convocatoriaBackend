@@ -11,11 +11,14 @@ module.exports = (sequelize, DataTypes, Model) => {
       });
       this.hasMany(models.Proyecto, {
         foreignKey: "id_usuario",
+        as: "proyectos_docente",
         onDelete: "RESTRICT",
       });
       this.belongsToMany(models.Proyecto, {
-        through: "proyecto_integrante",
-        foreignKey: "id_usuario",
+        through: models.Proyecto_integrante,
+        foreignKey: "id_usuario",  // Especifica el nombre exacto de la columna
+        otherKey: "id_proyecto",   // Especifica la columna en Proyecto
+        as: "proyectos_integrante",
         onDelete: "CASCADE",
       });
       this.hasMany(models.Calificacion, {

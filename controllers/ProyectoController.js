@@ -1,5 +1,4 @@
 const ProyectoService = require("../services/ProyectoService");
-
 const proyectoService = new ProyectoService();
 
 class ProyectoController {
@@ -27,26 +26,38 @@ class ProyectoController {
     }
   }
 
-  // Crear un nuevo proyecto
+  // Crear un nuevo proyecto con integrantes
   async create(req, res) {
     try {
       const data = req.body;
       const newProyecto = await proyectoService.create(data);
-      res.status(201).json(newProyecto);
+      res.status(201).json({
+        message: "Proyecto creado exitosamente",
+        proyecto: newProyecto
+      });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(400).json({
+        message: "Error al crear el proyecto",
+        error: error.message
+      });
     }
   }
 
-  // Actualizar un proyecto existente
+  // Actualizar un proyecto existente con integrantes
   async update(req, res) {
     try {
       const { id } = req.params;
       const data = req.body;
       const updatedProyecto = await proyectoService.update(id, data);
-      res.status(200).json(updatedProyecto);
+      res.status(200).json({
+        message: "Proyecto actualizado exitosamente",
+        proyecto: updatedProyecto
+      });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({
+        message: "Error al actualizar el proyecto",
+        error: error.message
+      });
     }
   }
 

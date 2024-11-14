@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes, Model) => {
   Criterio.init(
     {
       id_criterio: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4,
         primaryKey: true,
       },
       descripcion: {

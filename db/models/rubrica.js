@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes, Model) => {
     Rubrica.init(
       {
         id_rubrica: {
-          type: DataTypes.STRING,
+          type: DataTypes.UUID,
+          defaultValue:DataTypes.UUIDV4,
           primaryKey: true,
         },
         nombre_rubrica: {

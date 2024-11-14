@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes, Model) => {
     Convocatoria.init(
       {
         id_convocatoria: {
-          type: DataTypes.STRING,
+          type: DataTypes.UUID,
+          defaultValue:DataTypes.UUIDV4,
           primaryKey: true,
         },
         nombre_convocatoria: {

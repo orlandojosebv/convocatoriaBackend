@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes, Model) => {
   Calificacion.init(
     {
       id_calificacion: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4,
         primaryKey: true,
       },
       puntaje_final: {

@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes, Model) => {
   Notificacion.init(
     {
       id_notificacion: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4,
         primaryKey: true,
       },
       mensaje: {

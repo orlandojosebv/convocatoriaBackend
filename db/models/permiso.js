@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes, Model) => {
   Permiso.init(
     {
       id_permiso: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4,
         primaryKey: true,
       },
       nombre_permiso: {

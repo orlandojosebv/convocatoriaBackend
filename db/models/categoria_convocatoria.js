@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes, Model) => {
   CategoriaConvocatoria.init(
     {
       id_categoria: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4,
         primaryKey: true,
       },
       nombre_categoria: {

@@ -5,6 +5,13 @@ module.exports = (sequelize, DataTypes, Model) => {
         foreignKey: "id_usuario",
         onDelete: "CASCADE",
       });
+      this.hasMany(models.Token, {
+        foreignKey: {
+          type: DataTypes.STRING(256),
+          name: "id_usuario",
+        },
+        onDelete: "CASCADE"
+      });
       this.belongsTo(models.Rol, {
         foreignKey: "id_rol",
         onDelete: "RESTRICT",
@@ -32,7 +39,7 @@ module.exports = (sequelize, DataTypes, Model) => {
     {
       id_usuario: {
         type: DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
       correo: {

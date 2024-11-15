@@ -28,11 +28,26 @@ class UsuarioService {
     });
   }
 
+  async findOneByEmailWithPassword(correo) {
+    return await models.Usuario.findOne({
+      attributes: ["id_usuario", "correo", "estado", "contrasena"], // Solo los campos necesarios
+      include: [
+        {
+          model: models.Rol,
+          attributes: ["id_rol", "nombre_rol"] // Incluye solo el id y nombre del rol
+        }
+      ],
+      where: {
+        correo: { [Op.eq]: correo }
+      }
+    });
+  }
+
   // Crear un nuevo usuario
   async create(data) {
     return await models.Usuario.create(data);
- }
-   
+  }
+
 
   // Actualizar un usuario existente
   async update(id, data) {

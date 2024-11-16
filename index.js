@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const PORT= 3000;
-
+const { swaggerDocs } = require("./config/swagger.js");
+const PORT = 3000;
 const app = express();
-const db=require("./db/index.js");
+app.use(cors({ origin: "*" }));
+app.use(express.json());
 
-//Importacion de rutas
 const convocatoriaRouter = require("./routes/ConvocatoriaRouter.js");
 const rolRouter = require("./routes/RolRouter");
 const usuarioRouter = require("./routes/UsuarioRouter");
@@ -14,21 +14,12 @@ const rubricaRouter = require("./routes/RubricaRouter");
 const calificacionRouter = require("./routes/CalificacionRouter");
 const criterioRouter = require("./routes/CriterioRouter");
 const notificacionRouter = require("./routes/NotificacionRouter");
-const permisoRouter=require("./routes/PermisoRouter.js")
+const permisoRouter = require("./routes/PermisoRouter.js");
 const categoriaConvocatoriaRouter = require("./routes/CategoriaConvocatoriaRouter");
 const loginRouter = require("./routes/LoginRouter");
 
-
-app.use(
-    cors({
-        origin: "*",
-    })
-);
-
-app.use(express.json());
-
 app.get("/api", (_, res) => {
-    res.json({ message: "Hello from server!" });
+  res.json({ message: "Hello from server!" });
 });
 
 app.use("/api/convocatorias", convocatoriaRouter);
@@ -43,11 +34,12 @@ app.use("/api/permisos", permisoRouter);
 app.use("/api/categorias", categoriaConvocatoriaRouter);
 app.use("/api/auth", loginRouter);
 
+swaggerDocs(app, PORT);
 
-app.all('*', (req, res) => {
-    res.status(404).send({ message: "ruta invalida" });
-})
+app.all("*", (req, res) => {
+  res.status(404).send({ message: "ruta invalida" });
+});
 
 app.listen(PORT, () => {
-    console.log(`Server start with port ${PORT}`);
+  console.log(`Server start with port ${PORT}`);
 });

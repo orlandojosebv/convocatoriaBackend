@@ -4,6 +4,8 @@ const loginController = require("../controllers/LoginController");
 
 const verifyToken = require("../middlewares/verifyToken");
 
+router.post("/register", loginController.register);
+router.post("/confirmar/:token", loginController.confirmarCuenta);
 router.get("/me", verifyToken, loginController.me);
 router.post("/login", loginController.login);
 router.post("/forgot-password", loginController.solicitarToken);

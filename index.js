@@ -16,6 +16,7 @@ const criterioRouter = require("./routes/CriterioRouter");
 const notificacionRouter = require("./routes/NotificacionRouter");
 const permisoRouter=require("./routes/PermisoRouter.js")
 const categoriaConvocatoriaRouter = require("./routes/CategoriaConvocatoriaRouter");
+const loginRouter = require("./routes/LoginRouter");
 
 
 app.use(
@@ -40,6 +41,7 @@ app.use("/api/criterios", criterioRouter);
 app.use("/api/notificaciones", notificacionRouter);
 app.use("/api/permisos", permisoRouter);
 app.use("/api/categorias", categoriaConvocatoriaRouter);
+app.use("/api/auth", loginRouter);
 
 
 app.all('*', (req, res) => {

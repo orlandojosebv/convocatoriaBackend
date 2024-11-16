@@ -8,6 +8,73 @@ const { sendEmail } = require("../utils/sendEmail");
 const service = new UsuarioService();
 const tokenService = new TokenService();
 
+const register = async (req, res) => {
+    try {
+        const usuario = req.body.correo?.split("@")[0];
+        if (!usuario) {
+            return res.status(400).json({ message: "Correo es requerido" });
+        }
+
+        const correo = req.body.correo;
+        const posibleUsuario = await service.findOneByEmailWithPassword(correo);
+
+        if (posibleUsuario?.estado) {
+            throw new Error("Ya existe un usuario con ese correo");
+        }
+
+        if (posibleUsuario) {
+            await service.delete(posibleUsuario.id_usuario);
+        }
+
+        const contrasena = req.body.contrasena;
+        req.body.contrasena = bcrypt.hashSync(contrasena, 10);
+
+        const data = await service.createDefault(req.body);
+
+        const token = crypto.randomBytes(20).toString('hex');
+        const fechaExpiracion = Date.now() + 3600000; // 1 hora
+        const id_usuario = data.id_usuario;
+        const tokenObj = await tokenService.create({ id_usuario, correo, token, fechaExpiracion });
+        await data.addToken(tokenObj);
+
+        const urlConfirmar = `${URL_FRONT}/ConfirmarRegistro?token=${token}`;
+
+        await sendEmail({
+            destination: data.correo,
+            subject: "Confirma tu correo",
+            text: `Hola ${data.nombre} ${data.apellido}, te damos la bienvenida a Lula Crochet. Por favor confirma tu correo haciendo click en el siguiente enlace: 
+            ${urlConfirmar} .
+            
+            Recuerda que tienes un 1 hora para confirmar tu correo.`
+        });
+
+        return res.json({ success: true, data });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const confirmarCuenta = async (req, res) => {
+    const { token } = req.params;
+    try {
+        const valido = await tokenService.findValids(token);
+        if (valido === null || valido === undefined) {
+            throw new Error("Token no existe o ya expiró");
+        }
+        const data = await service.activarUsuario(valido.id_usuario);
+        await sendEmail({
+            destination: data.correo,
+            subject: "Bienvenido a nuestro aplicativo",
+            text: `Acabamos de confirmar tu registro. Inicia sesión en el siguiente enlace: ${URL_FRONT}/LoginRegistro`
+        });
+        res.status(200).json({ succes: true, token: token });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 const login = (req, res) => {
     try {
         const usuario = req.body.correo.split("@")[0] ?? null;
@@ -28,7 +95,7 @@ const login = (req, res) => {
                     }
                     if (resp) {
                         const id_usuario = user.id_usuario;
-                        const token = jwt.sign({ id_usuario }, SECRET_KEY, { expiresIn: "1h" });
+                        const token = jwt.sign({ id_usuario, correo }, SECRET_KEY, { expiresIn: "1h" });
                         user.contrasena = "";
                         return res.json({ success: true, token: token, data: user });
                     } else {
@@ -61,7 +128,7 @@ const solicitarToken = async (req, res) => {
         }
         const token = crypto.randomBytes(20).toString('hex');
         const fechaExpiracion = Date.now() + 3600000; // 1 hora
-        const tokenObj = await tokenService.create({ id_usuario: id_usuario, token: token, fechaExpiracion: fechaExpiracion });
+        const tokenObj = await tokenService.create({ id_usuario: id_usuario, token: token, fechaExpiracion: fechaExpiracion , correo: correo});
         user.addToken(tokenObj);
 
         const enlace = `${URL_FRONT}/ReestablecerContrasena?token=${token}`
@@ -121,6 +188,8 @@ const cambiarContrasena = async (req, res) => {
 };
 
 module.exports = {
+    register,
+    confirmarCuenta,
     login,
     me,
     solicitarToken,

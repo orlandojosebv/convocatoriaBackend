@@ -43,6 +43,16 @@ class UsuarioService {
     });
   }
 
+  async createDefault(data) {
+    data.estado = 0;
+    return await models.Usuario.create(data);
+  }
+
+  async activarUsuario(id_usuario) {
+    const res = await this.update(id_usuario, { estado: 1 });
+    return res;
+  }
+
   // Crear un nuevo usuario
   async create(data) {
     return await models.Usuario.create(data);

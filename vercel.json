@@ -4,13 +4,20 @@
       {
         "src": "index.js",
         "use": "@vercel/node",
-        "config": { "includeFiles": ["*"] }
+        "config": {
+          "includeFiles": ["config/**/*", "routes/**/*"]
+        }
       }
     ],
     "routes": [
+      {
+        "src": "/api-docs(.*)",
+        "dest": "index.js"
+      },
       {
         "src": "/(.*)",
         "dest": "index.js"
       }
     ]
   }
+  

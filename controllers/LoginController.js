@@ -1,5 +1,6 @@
 const UsuarioService = require("../services/UsuarioService");
 const TokenService = require("../services/TokenService");
+const RolService = require("../services/RolService");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");

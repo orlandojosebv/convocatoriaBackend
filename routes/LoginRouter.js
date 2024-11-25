@@ -35,6 +35,9 @@ const verifyToken = require("../middlewares/verifyToken");
  *               apellido:
  *                 type: string
  *                 description: Apellido del usuario
+ *               id_rol:
+ *                 type: string
+ *                 descripcion: Id del rol del usuario
  *     responses:
  *       200:
  *         description: Usuario registrado exitosamente

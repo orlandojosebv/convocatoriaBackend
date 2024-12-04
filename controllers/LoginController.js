@@ -1,5 +1,6 @@
 const UsuarioService = require("../services/UsuarioService");
 const TokenService = require("../services/TokenService");
+const RolService = require("../services/RolService");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -7,6 +8,7 @@ const { SECRET_KEY, URL_FRONT } = require("../config");
 const { sendEmail } = require("../utils/sendEmail");
 const service = new UsuarioService();
 const tokenService = new TokenService();
+const rolService = new RolService();
 
 const register = async (req, res) => {
     try {
@@ -35,7 +37,10 @@ const register = async (req, res) => {
         const fechaExpiracion = Date.now() + 3600000; // 1 hora
         const id_usuario = data.id_usuario;
         const tokenObj = await tokenService.create({ id_usuario, correo, token, fechaExpiracion });
+        const id_rol = req.body.id_rol;
+        const rolObj = await rolService.findOne(id_rol);
         await data.addToken(tokenObj);
+        if (rolObj) await data.addRol(rolObj);
 
         const urlConfirmar = `${URL_FRONT}/ConfirmarRegistro?token=${token}`;
 
@@ -113,7 +118,7 @@ const login = (req, res) => {
 
 const me = async (req, res) => {
     try {
-        res.status(200).json({ correo: req.id_usuario });   
+        res.status(200).json({ correo: req.id_usuario });
     } catch (error) {
         res.status(500).json({ success: false, message: "No autenticado" });
     }
@@ -128,7 +133,7 @@ const solicitarToken = async (req, res) => {
         }
         const token = crypto.randomBytes(20).toString('hex');
         const fechaExpiracion = Date.now() + 3600000; // 1 hora
-        const tokenObj = await tokenService.create({ id_usuario: id_usuario, token: token, fechaExpiracion: fechaExpiracion , correo: correo});
+        const tokenObj = await tokenService.create({ id_usuario: id_usuario, token: token, fechaExpiracion: fechaExpiracion, correo: correo });
         user.addToken(tokenObj);
 
         const enlace = `${URL_FRONT}/ReestablecerContrasena?token=${token}`

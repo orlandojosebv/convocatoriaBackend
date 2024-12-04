@@ -1,11 +1,12 @@
 const db = require("../db/index");
+const { Op } = db.Sequelize;
 const models = db.sequelize.models;
 
 class UsuarioService {
   // Obtener todos los usuarios con los campos solicitados y el rol
   async findAll() {
     return await models.Usuario.findAll({
-      attributes: ["id_usuario","nombre","apellido", "correo", "estado"], // Solo los campos necesarios
+      attributes: ["id_usuario", "nombre", "apellido", "correo", "estado"], // Solo los campos necesarios
       include: [
         {
           model: models.Rol,
@@ -18,7 +19,7 @@ class UsuarioService {
   // Obtener un usuario por ID con los campos solicitados y el rol
   async findOne(id) {
     return await models.Usuario.findByPk(id, {
-      attributes: ["id_usuario", "nombre","apellido","correo", "estado"], // Solo los campos necesarios
+      attributes: ["id_usuario", "nombre", "apellido", "correo", "estado"], // Solo los campos necesarios
       include: [
         {
           model: models.Rol,

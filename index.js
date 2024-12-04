@@ -4,7 +4,7 @@ const { swaggerDocs } = require("./config/swagger.js");
 const PORT = 3000;
 const app = express();
 app.use(cors({
-  origin: "https://convocatoria-proyectos-ufps.vercel.app/", 
+  origin: "https://convocatoria-proyectos-ufps.vercel.app", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
